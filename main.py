@@ -5,15 +5,15 @@ window.title("Tk Converter")
         
 #choice_dict = {conversion type : (from unit, to unit, multiplier)}
 #add more conversion options by just expanding the dictionary
-choice_dict = {'  km --> mi ' : ('km', 'mi', 0.621371),
-               '   m --> ft ' : ('m ', 'ft', 3.28084),
-               '  cm --> in ' : ('cm', 'in', 0.393701)}
-clear_choice = ' select type'
+choice_dict = {' km --> mi ' : ('km', 'mi', 0.621371),
+               '  m --> ft ' : ('m ', 'ft', 3.28084),
+               ' cm --> in ' : ('cm', 'in', 0.393701)}
+clear_choice = 'select type'
 
 def clear():
     # clear conversion type dropdown
     choice = clear_choice
-    from_unit = to_unit = mult = '  '
+    from_unit = to_unit = mult = '   '
     tkvar.set(choice)
 
     # clear entry box and label
