@@ -5,15 +5,15 @@ window.title("Tk Converter")
         
 #choice_dict = {conversion type : (from unit, to unit, multiplier)}
 #add more conversion options by just expanding the dictionary
-choice_dict = {' select type' : ('  ', '  ', 0),
-               '  km --> mi ' : ('km', 'mi', 0.621371),
+choice_dict = {'  km --> mi ' : ('km', 'mi', 0.621371),
                '   m --> ft ' : ('m ', 'ft', 3.28084),
                '  cm --> in ' : ('cm', 'in', 0.393701)}
+clear_choice = ' select type'
 
 def clear():
     # clear conversion type dropdown
-    choice = ' select type'
-    from_unit, to_unit, mult = choice_dict[choice]
+    choice = clear_choice
+    from_unit = to_unit = mult = '  '
     tkvar.set(choice)
 
     # clear entry box and label
@@ -28,27 +28,29 @@ def clear():
  
 def change_dropdown(*args):
     choice = tkvar.get()
-    from_unit, to_unit, mult = choice_dict[choice]
+    if choice != clear_choice:
+        from_unit, to_unit, mult = choice_dict[choice]
 
-    # update entry units per new choice
-    e2_label = tk.Label(window, text=from_unit)
-    e2_label.grid(row=0, column=0, padx=5)
+        # update entry units per new choice
+        e2_label = tk.Label(window, text=from_unit)
+        e2_label.grid(row=0, column=0, padx=5)
 
-    # update output units per new choice
-    t1_label = tk.Label(window, text=to_unit)
-    t1_label.grid(row=0, column=4, padx=10, pady=5)
+        # update output units per new choice
+        t1_label = tk.Label(window, text=to_unit)
+        t1_label.grid(row=0, column=4, padx=10, pady=5)
 
-    convert()
+        convert()
 
 def convert():
     choice = tkvar.get()
-    from_unit, to_unit, mult = choice_dict[choice]
-    from_value = e2_value.get()
-    
-    if choice != ' select type' and from_value != '':
-        t1.delete("1.0", tk.END)
-        to_value = float(from_value) * mult
-        t1.insert(tk.END, to_value)
+    if choice != clear_choice:
+        from_unit, to_unit, mult = choice_dict[choice]
+        from_value = e2_value.get()
+        
+        if from_value != '':
+                t1.delete("1.0", tk.END)
+                to_value = float(from_value) * mult
+                t1.insert(tk.END, to_value)
 
 if __name__ == "__main__":
     choices = choice_dict.keys()
