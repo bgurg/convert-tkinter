@@ -1,51 +1,80 @@
 import tkinter as tk
 
 window=tk.Tk()
-    
-def from_kg():
-    miles = float(e2_value.get()) * 0.621371
-    t1.delete("1.0", tk.END)
-    t1.insert(tk.END, miles)
-
-    feet = float(e2_value.get()) * 3280.84
-    t2.delete("1.0", tk.END)
-    t2.insert(tk.END, feet)
-
-    inches = float(e2_value.get()) * 39370.1
-    t3.delete("1.0", tk.END)
-    t3.insert(tk.END, inches)
+window.title("Tk Converter")
+        
+#choice_dict = {conversion type : (from unit, to unit, multiplier)}
+#add more conversion options by just expanding the dictionary
+choice_dict = {' select type' : ('  ', '  ', 0),
+               '  km --> mi ' : ('km', 'mi', 0.621371),
+               '   m --> ft ' : ('m ', 'ft', 3.28084),
+               '  cm --> in ' : ('cm', 'in', 0.393701)}
 
 def clear():
+    # clear conversion type dropdown
+    choice = ' select type'
+    from_unit, to_unit, mult = choice_dict[choice]
+    tkvar.set(choice)
+
+    # clear entry box and label
+    e2_label = tk.Label(window, text=from_unit)
+    e2_label.grid(row=0, column=0, padx=10)
     e2.delete(0, tk.END)
+
+    # clear output box and label
+    t1_label = tk.Label(window, text=to_unit)
+    t1_label.grid(row=0, column=4, padx=10, pady=5)
     t1.delete("1.0", tk.END)
-    t2.delete("1.0", tk.END)
-    t3.delete("1.0", tk.END)
+ 
+def change_dropdown(*args):
+    choice = tkvar.get()
+    from_unit, to_unit, mult = choice_dict[choice]
+
+    # update entry units per new choice
+    e2_label = tk.Label(window, text=from_unit)
+    e2_label.grid(row=0, column=0, padx=5)
+
+    # update output units per new choice
+    t1_label = tk.Label(window, text=to_unit)
+    t1_label.grid(row=0, column=4, padx=10, pady=5)
+
+    convert()
+
+def convert():
+    choice = tkvar.get()
+    from_unit, to_unit, mult = choice_dict[choice]
+    from_value = e2_value.get()
     
-e2_label = tk.Label(window, text="km")
-e2_value = tk.StringVar()
-e2 = tk.Entry(window, textvariable=e2_value)
-e2_label.grid(row=0, column=0, padx=10)
-e2.grid(row=0, column=1)
+    if choice != ' select type' and from_value != '':
+        t1.delete("1.0", tk.END)
+        to_value = float(from_value) * mult
+        t1.insert(tk.END, to_value)
 
-b1 = tk.Button(window, text="-->", command=from_kg)
-b1.grid(row=0, column=2, padx=10)
+if __name__ == "__main__":
+    choices = choice_dict.keys()
 
-b2 = tk.Button(window, text="Clear", command=clear)
-b2.grid(row=2, column=0, padx=10)
+    # entry box for value to be converted
+    e2_value = tk.StringVar()
+    e2 = tk.Entry(window, font=("Calibri",10), textvariable=e2_value)
+    e2.grid(row=0, column=1)
 
-t1 = tk.Text(window, height=1, width=20)
-t1_label = tk.Label(window, text="miles")
-t1.grid(row=0, column=3)
-t1_label.grid(row=0, column=4, padx=10, pady=10)
+    # text output of converted results
+    t1 = tk.Text(window, font=("Calibri",10), height=1, width=20)
+    t1.grid(row=0, column=3)
+    
+    # pulldown menu to select conversion type
+    tkvar = tk.StringVar(window)
+    clear()
+    popupMenu = tk.OptionMenu(window, tkvar, *choices)
+    popupMenu.grid(row=0, column=2, padx=10, pady=5)    
+    tkvar.trace('w', change_dropdown)
 
-t2=tk.Text(window, height=1, width=20)
-t2_label = tk.Label(window, text="feet")
-t2.grid(row=1,column=3)
-t2_label.grid(row=1, column=4, padx=10)
+    # button to convert (if entry added after conversion type selected)
+    b1 = tk.Button(window, text="Convert", command=convert)
+    b1.grid(row=2, column=3, padx=10, pady=5)
 
-t3 = tk.Text(window, height=1, width=20)
-t3_label = tk.Label(window, text="inches")
-t3.grid(row=2, column=3)
-t3_label.grid(row=2, column=4, padx=10, pady=10)
+    # button to clear everything
+    b2 = tk.Button(window, text="Clear", command=clear)
+    b2.grid(row=2, column=1, padx=10, pady=5)
 
-window.mainloop()
+    window.mainloop()
